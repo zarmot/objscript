@@ -4,14 +4,15 @@ import { extname, dirname } from "path"
 import { WebSocket, WebSocketServer } from "ws"
 
 declare global {
-  var Datap: typeof MOD
+  var Adata: typeof MOD
 }
 const MOD = {
   config: {
+    ws: false,
     port: 13551,
   }
 }
-global.Datap = MOD
+global.Adata = MOD
 
 async function _load(path: string) {
   let mod: any
@@ -35,7 +36,10 @@ config?.init?.()
 
 //server
 const results: { [name: string]: any | undefined } = {}
-const wss = new WebSocketServer({ port: Datap.config.port })
+let wss: WebSocketServer | undefined
+if (Adata.config.ws) {
+  wss = new WebSocketServer({ port: Adata.config.port })
+}
 
 //watch
 const spath = `${process.cwd()}/.build/scripts`
@@ -51,11 +55,13 @@ watch(spath, { recursive: true }, async (_, name) => {
         await mkdir(`${process.cwd()}/data/${dirname(name)}`, { recursive: true })
         await writeFile(`${process.cwd()}/data/${name.replace(".js", ".json")}`, JSON.stringify(data))
         results[name] = data
-        wss.clients.forEach(function each(client) {
-          if (client.readyState === WebSocket.OPEN) {
-            client.send(JSON.stringify([name, data]));
-          }
-        })
+        if (wss) {
+          wss.clients.forEach(function each(client) {
+            if (client.readyState === WebSocket.OPEN) {
+              client.send(JSON.stringify([name, data]));
+            }
+          })
+        }
         console.log(`[${name}]`)
         console.log(data)
       }
