@@ -1,0 +1,28 @@
+{
+  "name": "adata",
+  "version": "0.100.0",
+  "description": "TypeScript/Node.js Data Process Tools.",
+  "license": "MIT",
+  "author": "Zarmot",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zarmot/adata"
+  },
+  "type": "module",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "dev": "tsc -w"
+  },
+  "dependencies": {
+    "ws": "^8.13.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.4.4",
+    "@types/ws": "^8.5.5",
+    "typescript": "^5.1.6"
+  }
+}
