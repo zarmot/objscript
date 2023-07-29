@@ -1,7 +1,7 @@
 {
   "name": "adata",
-  "version": "0.300.0",
-  "description": "TypeScript/Node.js Data Process Tools.",
+  "version": "0.301.0",
+  "description": "TypeScript/Node.js Data Writing Tools.",
   "license": "MIT",
   "author": "Zarmot",
   "repository": {
@@ -17,12 +17,8 @@
   "scripts": {
     "dev": "tsc -w"
   },
-  "dependencies": {
-    "ws": "^8.13.0"
-  },
   "devDependencies": {
     "@types/node": "^20.4.4",
-    "@types/ws": "^8.5.5",
     "typescript": "^5.1.6"
   }
 }
