@@ -11,6 +11,7 @@ const MOD = {
   data: undefined as any,
   event: {
     script: Event<(name: string) => void>(),
+    finish: Event<(name: string) => void>(),
     result: Event<(name: string, data: any) => void>(),
   },
   config: {
@@ -52,6 +53,7 @@ watch(spath, { recursive: true }, async (_, name) => {
         MOD.data = null
         MOD.event.script.dispatch(name)
         await _load(`file://${spath}/${name}?t=${Date.now()}`)
+        MOD.event.finish.dispatch(name)
         if (MOD.data) {
           await mkdir(`${process.cwd()}/data/${dirname(name)}`, { recursive: true })
           await writeFile(`${process.cwd()}/data/${name.replace(".js", ".json")}`, JSON.stringify(MOD.data))
