@@ -1,6 +1,6 @@
 {
   "name": "@objscript/schema",
-  "version": "0.500.1",
+  "version": "0.500.7",
   "description": "TypeScript/Node.js Data Writing Tools.",
   "license": "MIT",
   "author": "Zarmot",
@@ -12,10 +12,11 @@
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "files": [
+    "cli.js",
     "lib"
   ],
   "bin": {
-    "objsgen": "./lib/cli.js"
+    "objsgen": "./cli.js"
   },
   "scripts": {
     "dev": "tsc -w"
