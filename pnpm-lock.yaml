@@ -18,7 +18,7 @@ importers:
   schema:
     dependencies:
       '@objscript/core':
-        specifier: link:..\core
+        specifier: workspace:*
         version: link:../core
     devDependencies:
       '@types/node':

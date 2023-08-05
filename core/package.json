@@ -6,7 +6,7 @@
   "author": "Zarmot",
   "repository": {
     "type": "git",
-    "url": "https://github.com/zarmot/objscript"
+    "url": "git+https://github.com/zarmot/objscript.git"
   },
   "type": "module",
   "main": "./lib/index.js",
