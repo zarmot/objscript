@@ -4,13 +4,29 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-devDependencies:
-  '@types/node':
-    specifier: ^20.4.4
-    version: 20.4.4
-  typescript:
-    specifier: ^5.1.6
-    version: 5.1.6
+importers:
+
+  core:
+    devDependencies:
+      '@types/node':
+        specifier: ^20.4.4
+        version: 20.4.4
+      typescript:
+        specifier: ^5.1.6
+        version: 5.1.6
+
+  schema:
+    dependencies:
+      '@objscript/core':
+        specifier: link:..\core
+        version: link:../core
+    devDependencies:
+      '@types/node':
+        specifier: ^20.4.4
+        version: 20.4.4
+      typescript:
+        specifier: ^5.1.6
+        version: 5.1.6
 
 packages:
 
