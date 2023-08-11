@@ -1,6 +1,6 @@
 {
   "name": "@objscript/schema",
-  "version": "0.500.7",
+  "version": "0.510.0",
   "description": "TypeScript/Node.js Data Writing Tools.",
   "license": "MIT",
   "author": "Zarmot",

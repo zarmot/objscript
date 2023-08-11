@@ -134,7 +134,10 @@ export default function GenObjScriptLib(namespace: string, schema: ObjSchema.Def
     //gen/types.ts
     {
       use(typesal)
-      l(`export class ${t.Name}${t.WithLineNumber ? " extends ObjScript.WithLineNumber" : ""} {`)
+      l(`export class ${t.Name} {`)
+      if (t.WithLineNumber) {
+        l(`OBJSLine?: number`, 1)
+      }
       l(`constructor(`, 1)
       ctor.forEach((f) => {
         l(`public ${f.Name}: ${ts(f)},`, 2)
@@ -142,11 +145,7 @@ export default function GenObjScriptLib(namespace: string, schema: ObjSchema.Def
       ctor_o.forEach((f) => {
         l(`public ${f.Name}?: ${ts(f)},`, 2)
       })
-      if (t.WithLineNumber) {
-        l(`) { super() }`, 1)
-      } else {
-        l(`) {}`, 1)
-      }
+      l(`) {}`, 1)
       nctor.forEach((f) => {
         a(f.Name, 1)
         !f.Required && a("?")
@@ -164,8 +163,11 @@ export default function GenObjScriptLib(namespace: string, schema: ObjSchema.Def
       l(`export class ${t.Name}Handler {`)
       l(`constructor(`, 1)
       l(`public obj: ${t.Name},`, 2)
-      l(`public env: ObjScript.Ref<${namespace}.${schema.Name}Env>,`, 2)
+      l(`public envref: ObjScript.Ref<${namespace}.${schema.Name}Env>,`, 2)
       l(`) {}`, 1)
+      l(`get env() {`, 1)
+      l(`return this.envref.r`, 2)
+      l(`}`, 1)
       l(`c(cache: ObjScript.Cache<${t.Name}Handler>) {`, 1)
       l(`cache.r = this`, 2)
       l(`return this`, 2)
@@ -193,6 +195,14 @@ export default function GenObjScriptLib(namespace: string, schema: ObjSchema.Def
           l(`}`, 1)
         }
       })
+      pctor.forEach((f) => {
+        l(`${f.PubCtor}(...args: ConstructorParameters<${namespace}.${schema.Name}Env["${f.TypeName}"]>) {`, 1)
+        l(`const o = new this.env.${f.TypeName}(...args)`, 2)
+        l(`const oh = new this.env.${f.TypeName}Handler(o, this.envref)`, 2)
+        l(`this.obj.${f.Name}.push(o)`, 2)
+        l(`return oh`, 2)
+        l(`}`, 1)
+      })
 
       l(`}`, 0)
     }
@@ -202,18 +212,10 @@ export default function GenObjScriptLib(namespace: string, schema: ObjSchema.Def
       use(typesxal)
       if (t.WithLineNumber && t.LinedFns.length > 0) {
         l(`export class ${t.Name}Handler extends Ext.${t.Name}Handler {`)
-        pctor.forEach((f) => {
-          l(`${f.PubCtor}(...args: ConstructorParameters<typeof Ext.${f.TypeName}>) {`, 1)
-          l(`const o = new Ext.${f.TypeName}(...args)`, 2)
-          l(`const oh = new ${f.TypeName}Handler(o, this.env)`, 2)
-          l(`this.obj.${f.Name}.push(o)`, 2)
-          l(`return oh`, 2)
-          l(`}`, 1)
-        })
         t.LinedFns.forEach((fn) => {
           l(`private ${fn}_lined(line: number, ...args: Parameters<typeof this.${fn}>) {`, 1)
           l(`const obj = this.${fn}(...args)`, 2)
-          l(`obj.obj.__OBJSLine = line`, 2)
+          l(`obj.obj.OBJSLine = line`, 2)
           l(`return obj`, 2)
           l(`}`, 1)
         })
@@ -249,16 +251,6 @@ export default function GenObjScriptLib(namespace: string, schema: ObjSchema.Def
     l(`}`, 2)
     l(`}`, 1)
     l(`}`)
-
-    //env
-    l(`export const ${schema.Name}Env = {`)
-    a(`LinedEnvFns: [`, 1)
-    a(schema.LinedEnvFns.map(fn => `"${fn}"`).join(", "))
-    l(`],`)
-    a(`LinedChianFns: [`, 1)
-    a(schema.LinedChianFns.map(fn => `"${fn}"`).join(", "))
-    l(`],`)
-    l("}")
 
     l(`export default function ${schema.Name}() {`)
     l(`const envref = {} as any`, 1)
@@ -356,6 +348,10 @@ export default function GenObjScriptLib(namespace: string, schema: ObjSchema.Def
     })
 
     l(`return {`, 1)
+    schema.Types.forEach((t) => {
+      l(`${t.Name},`, 2)
+      l(`${t.Name}Handler,`, 2)
+    })
     l(`envref,`, 2)
     l(`obj,`, 2)
     l(`c,`, 2)
@@ -382,13 +378,23 @@ export default function GenObjScriptLib(namespace: string, schema: ObjSchema.Def
     l(`}`, 1)
     l(`}`)
 
+    //env
+    l(`export const ${schema.Name}Env = {`)
+    a(`LinedEnvFns: [`, 1)
+    a(schema.LinedEnvFns.map(fn => `"${fn}"`).join(", "))
+    l(`],`)
+    a(`LinedChianFns: [`, 1)
+    a(schema.LinedChianFns.map(fn => `"${fn}"`).join(", "))
+    l(`],`)
+    l("}")
+
     l(`export function ${schema.Name}() {`)
     l(`const ext = Ext()`, 1)
 
     schema.LinedEnvFns.forEach((fn) => {
       l(`function ${fn}_lined(line: number, ...args: Parameters<typeof ext.${fn}>) {`, 1)
       l(`const obj = ext.${fn}(...args)`, 2)
-      l(`obj.obj.__OBJSLine = line`, 2)
+      l(`obj.obj.OBJSLine = line`, 2)
       l(`return obj`, 2)
       l(`}`, 1)
     })

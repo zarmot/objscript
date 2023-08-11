@@ -111,12 +111,12 @@ export function Define() {
   //lined
   function t_lined(line: number, ...args: Parameters<typeof t>) {
     const obj = t(...args)
-    obj.obj.__OBJSLine = line
+    obj.obj.OBJSLine = line
     return obj
   }
   function tf_lined(line: number, ...args: Parameters<typeof tf>) {
     const obj = tf(...args)
-    obj.obj.__OBJSLine = line
+    obj.obj.OBJSLine = line
     return obj
   }
 
@@ -136,11 +136,12 @@ export function Define() {
   envref.r = env
   return env
 }
-export class Type extends ObjScript.WithLineNumber {
+export class Type {
+  OBJSLine?: number
   constructor(
     public Name: string,
     public FnName?: string,
-  ) { super() }
+  ) { }
   Fields: Array<Field> = []
   WithLineNumber?: boolean
   LinedFns: string[] = []
@@ -169,15 +170,16 @@ export class TypeHandler {
   //lined
   private f_lined(line: number, ...args: Parameters<typeof this.f>) {
     const obj = this.f(...args)
-    obj.obj.__OBJSLine = line
+    obj.obj.OBJSLine = line
     return obj
   }
 }
-export class Field extends ObjScript.WithLineNumber {
+export class Field {
+  OBJSLine?: number
   constructor(
     public Name: string,
     public Type: ObjSchema.FieldType,
-  ) { super() }
+  ) {}
   TypeName?: string
   Required?: boolean
   DefaultValue?: boolean | number | string
